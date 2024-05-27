@@ -86,8 +86,18 @@ def get_systime_msg(the_connection):
     if(msg!=None):
         print(f"(System : {msg.get_srcSystem()}) (Component : {msg.get_srcComponent()}) ",msg)
 
-    
-TEST = 4
+# Set up TEST constant to test different cases
+# Test1: RPI requests data from the Pixhawk.
+# Test2: Pixhawk sends the data to the RPI.
+# Test3: Pixhawk requests data from the RPI, and RPI replies.
+# Test4: RPI sends data to the Pixhawk.
+# Test5: GCS requests data from the Pixhawk.
+# Test6: Pixhawk sends data to the GCS.
+# Test7: Pixhawk requests data from the GCS, and GCS replies.
+# Test8: GCS sends data to the Pixhawk.
+# Test-1: To test other mavlink messages
+
+TEST = 2
 if __name__=='__main__':
     
     if TEST == 1:
