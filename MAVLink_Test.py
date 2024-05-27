@@ -96,14 +96,15 @@ def get_systime_msg(the_connection, systemID):
 # Test3: Pixhawk requests data from the RPI, and RPI replies.
 # Test4: RPI sends data to the Pixhawk.
 # Following Tests are for the wireless communication, MAVProxy is required.
-# command line input: mavproxy.py --master=/dev/ttyUSB0 --console --out=udp:127.0.0.1:14550
+# command line input: 
+# mavproxy.py --master=/dev/ttyUSB0 --console --out=udp:127.0.0.1:14550
 # Test5: GCS requests data from the Pixhawk.
 # Test6: Pixhawk sends data to the GCS.
 # Test7: Pixhawk requests data from the GCS, and GCS replies.
 # Test8: GCS sends data to the Pixhawk.
 # Test-1: To test other mavlink messages
 
-TEST = 4
+TEST = 8
 if __name__=='__main__':
     
     if TEST == 1:
