@@ -60,9 +60,11 @@ def get_highres_imu_msg(the_connection):
         print(f"System : {msg.get_srcSystem()}",msg)
 
 def get_msg(the_connection,systemID):
-    msg = the_connection.recv_match(blocking=True)
-    if(msg!=None and msg.get_srcSystem()==systemID):
-        print(f"(System : {msg.get_srcSystem()}) (Component : {msg.get_srcComponent()}) ",msg)
+    while True:
+        msg = the_connection.recv_match(blocking=True)
+        if msg is not None and msg.get_srcSystem() == systemID:
+            print(f"(System : {msg.get_srcSystem()}) (Component : {msg.get_srcComponent()}) ", msg)
+            return
 
 def get_ack_msg(the_connection):
     msg = the_connection.recv_match(type = 'COMMAND_ACK',blocking=True)
@@ -81,23 +83,27 @@ def send_systime_msg(the_connection):
     the_connection.mav.system_time_send(time_unix_usec, time_boot_ms)
     print(f"Sending SYSTEM_TIME: {time_unix_usec}")
 
-def get_systime_msg(the_connection):
-    msg = the_connection.recv_match(type = 'SYSTEM_TIME',blocking=True)
-    if(msg!=None):
-        print(f"(System : {msg.get_srcSystem()}) (Component : {msg.get_srcComponent()}) ",msg)
+def get_systime_msg(the_connection, systemID):
+    while True:
+        msg = the_connection.recv_match(type = 'SYSTEM_TIME', blocking=True)
+        if msg is not None and msg.get_srcSystem() == systemID:
+            print(f"(System : {msg.get_srcSystem()}) (Component : {msg.get_srcComponent()}) ", msg)
+            return
 
 # Set up TEST constant to test different cases
 # Test1: RPI requests data from the Pixhawk.
 # Test2: Pixhawk sends the data to the RPI.
 # Test3: Pixhawk requests data from the RPI, and RPI replies.
 # Test4: RPI sends data to the Pixhawk.
+# Following Tests are for the wireless communication, MAVProxy is required.
+# command line input: mavproxy.py --master=/dev/ttyUSB0 --console --out=udp:127.0.0.1:14550
 # Test5: GCS requests data from the Pixhawk.
 # Test6: Pixhawk sends data to the GCS.
 # Test7: Pixhawk requests data from the GCS, and GCS replies.
 # Test8: GCS sends data to the Pixhawk.
 # Test-1: To test other mavlink messages
 
-TEST = 2
+TEST = 4
 if __name__=='__main__':
     
     if TEST == 1:
@@ -121,7 +127,7 @@ if __name__=='__main__':
             command = get_command_msg(the_connection)
             if(command[0]==2):
                 send_systime_msg(the_connection)
-            get_systime_msg(the_connection)
+            get_systime_msg(the_connection,155)
 
     elif TEST == 4:
         # 4. RPI Pushes to Pixhawk
@@ -152,11 +158,12 @@ if __name__=='__main__':
             command = get_command_msg(the_connection)
             if(command[0]==2):
                 send_systime_msg(the_connection)
-            get_systime_msg(the_connection)
+            get_systime_msg(the_connection,155)
 
     elif TEST == 8:
         # 8. GCS Pushes to Pixhawk
         the_connection = setup_connection(True)
         while True:
             send_customized_command_long(the_connection)
+            get_command_msg(the_connection)
             time.sleep(1)
