@@ -104,7 +104,7 @@ def get_systime_msg(the_connection, systemID):
 # Test8: GCS sends data to the Pixhawk.
 # Test-1: To test other mavlink messages
 
-TEST = 8
+TEST = 4
 if __name__=='__main__':
     
     if TEST == 1:
